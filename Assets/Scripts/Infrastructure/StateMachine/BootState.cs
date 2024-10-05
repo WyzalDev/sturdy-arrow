@@ -1,4 +1,5 @@
-using UnityEngine;
+using SturdyArrow.Services;
+using SturdyArrow.SceneManagement;
 
 namespace SturdyArrow.Infrastructure.StateMachine
 {
@@ -6,22 +7,29 @@ namespace SturdyArrow.Infrastructure.StateMachine
     {
         public const string BOOTSTRAP_NAME = "BOOTSTRAP";
 
-        private float timer = 0;
+        private bool isFirstUpdate = true;
 
-        public BootState(Fsm fsm) : base(fsm) => Name = BOOTSTRAP_NAME;
+        private ISceneService _sceneService;
 
-        public override void Enter()
+        public BootState(Fsm fsm, ISceneService sceneService) : base(fsm)
         {
-            base.Enter();
-            timer = 2;
+            Name = BOOTSTRAP_NAME;
+            _sceneService = sceneService;
         }
 
         public override void Update()
         {
-            timer = Mathf.Clamp(timer - Time.deltaTime, 0, 2);
-            if(timer == 0) {
+            if(isFirstUpdate)
+            {
                 fsm.SetState(MainMenuState.MAINMENU_NAME);
+                isFirstUpdate = false;
             }
+        }
+
+        public override void Exit()
+        {
+            base.Exit();
+            _sceneService.Load(Scene.MainMenu);
         }
     }
 }

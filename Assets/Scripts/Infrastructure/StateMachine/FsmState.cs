@@ -13,11 +13,13 @@ namespace SturdyArrow.Infrastructure.StateMachine
             this.fsm = fsm;
         }
 
-        public virtual void Enter() {
+        public virtual void Enter()
+        {
             Debug.Log($"Enter [{Name}] state");
         }
 
-        public virtual void Exit() {
+        public virtual void Exit()
+        {
             Debug.Log($"Exit [{Name}] state, now updating");
         }
 
@@ -25,4 +27,3 @@ namespace SturdyArrow.Infrastructure.StateMachine
 
     }
 }
-

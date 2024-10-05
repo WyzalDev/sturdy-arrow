@@ -21,10 +21,12 @@ namespace SturdyArrow.Infrastructure.StateMachine
             timer = Mathf.Clamp(timer - Time.deltaTime, 0, 2);
             if(timer == 0)
             {
-                int r = (int) Math.Round(UnityEngine.Random.value);
+                int r = (int)Math.Round(UnityEngine.Random.value);
 
-                switch(r) {
-                    case 1: {
+                switch(r)
+                {
+                    case 1:
+                        {
                             fsm.SetState(MainMenuState.MAINMENU_NAME);
                             break;
                         }

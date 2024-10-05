@@ -1,35 +1,71 @@
 using SturdyArrow.Infrastructure.StateMachine;
+using SturdyArrow.SceneManagement;
 using SturdyArrow.Services;
+using Unity.VisualScripting;
+using UnityEngine;
 using Zenject;
 
-public class BootstrapInstaller : MonoInstaller
+namespace SturdyArrow.Infrastructure.Installers
 {
-    public override void InstallBindings()
+    public class BootstrapInstaller : MonoInstaller
     {
-        BindFsm();
-        BindLifecycleService();
-    }
+        public override void InstallBindings()
+        {
+            BindSceneLoader();
+            BindSceneService();
 
-    private void BindLifecycleService()
-    {
-        LifecycleService lifecycleService = Container
-            .InstantiateComponentOnNewGameObject<LifecycleService>();
-        Container.Bind<LifecycleService>().FromInstance(lifecycleService).AsSingle();
-    }
+            BindFsm();
+            InstantiateLifecycleService();
+            CheckAllObjectsInContainer();
+        }
 
-    private void BindFsm() {
-        Fsm fsmInstance = new Fsm();
-        
-        fsmInstance.AddState(new BootState(fsmInstance));
-        fsmInstance.AddState(new MainMenuState(fsmInstance));
-        fsmInstance.AddState(new GameLoopState(fsmInstance));
-        fsmInstance.AddState(new EndGameState(fsmInstance));
+        private void BindFsm()
+        {
+            Fsm fsmInstance = new Fsm();
 
-        fsmInstance.SetState(BootState.BOOTSTRAP_NAME);
+            Container.Bind<Fsm>()
+                .FromInstance(fsmInstance)
+                .AsSingle()
+                .NonLazy();
 
-        Container.Bind<Fsm>()
-            .FromInstance(fsmInstance)
-            .AsSingle()
-            .NonLazy();
+            fsmInstance.AddState(Container.Instantiate<BootState>());
+            fsmInstance.AddState(Container.Instantiate<MainMenuState>());
+            fsmInstance.AddState(Container.Instantiate<GameLoopState>());
+            fsmInstance.AddState(Container.Instantiate<EndGameState>());
+            fsmInstance.SetState(BootState.BOOTSTRAP_NAME);
+        }
+
+        private void InstantiateLifecycleService()
+        {
+            LifecycleMono lifecycleService = Container
+                .InstantiateComponentOnNewGameObject<LifecycleMono>();
+        }
+
+
+        private void BindSceneLoader()
+        {
+            Container.Bind<SceneLoader>()
+                .FromNew()
+                .AsSingle()
+                .NonLazy();
+        }
+
+        private void BindSceneService()
+        {
+            Container.Bind<ISceneService>()
+                .To<DefaultSceneService>()
+                .FromNew()
+                .AsSingle();
+        }
+
+        private void CheckAllObjectsInContainer()
+        {
+            Debug.Log("START CHECKING ALL OBJECT IN CONTAINER");
+            Debug.Log("CONTRACTS :");
+            foreach(var contract in Container.AllContracts)
+            {
+                Debug.Log(contract.ToSafeString());
+            }
+        }
     }
 }

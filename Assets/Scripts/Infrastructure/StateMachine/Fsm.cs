@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 
-
 namespace SturdyArrow.Infrastructure.StateMachine
 {
     public class Fsm
@@ -11,11 +10,12 @@ namespace SturdyArrow.Infrastructure.StateMachine
 
         public void AddState(FsmState state) => _states.Add(state.Name, state);
 
-        public void SetState(string name) {
-            
-            if (CurrentState != null && CurrentState.Name.Equals(name)) return;
+        public void SetState(string name)
+        {
 
-            if (_states.TryGetValue(name, out var newState))
+            if(CurrentState != null && CurrentState.Name.Equals(name)) return;
+
+            if(_states.TryGetValue(name, out var newState))
             {
                 CurrentState?.Exit();
                 CurrentState = newState;
