@@ -1,3 +1,4 @@
+using SturdyArrow.Services;
 using UnityEngine;
 
 namespace SturdyArrow.Infrastructure.StateMachine
@@ -8,21 +9,34 @@ namespace SturdyArrow.Infrastructure.StateMachine
 
         private float timer = 0;
 
-        public MainMenuState(Fsm fsm) : base(fsm) => Name = MAINMENU_NAME;
+        public IAudioService _audioService;
+
+        public MainMenuState(Fsm fsm, IAudioService audioService) : base(fsm)
+        {
+            Name = MAINMENU_NAME;
+            _audioService = audioService;
+        }
 
         public override void Enter()
         {
             base.Enter();
-            timer = 2;
+            timer = 4;
+            _audioService.PlayMusic("SomeMusic1", true);
         }
 
         public override void Update()
         {
-            timer = Mathf.Clamp(timer - Time.deltaTime, 0, 2);
+            timer = Mathf.Clamp(timer - Time.deltaTime, 0, 4);
             if(timer == 0)
             {
                 fsm.SetState(GameLoopState.GAMELOOP_NAME);
             }
+        }
+
+        public override void Exit()
+        {
+            base.Exit();
+            _audioService.PlayMusic("SomeMusic2", true);
         }
 
     }

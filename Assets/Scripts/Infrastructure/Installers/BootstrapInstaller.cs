@@ -1,3 +1,4 @@
+using SturdyArrow.Audio;
 using SturdyArrow.Infrastructure.StateMachine;
 using SturdyArrow.SceneManagement;
 using SturdyArrow.Services;
@@ -9,14 +10,36 @@ namespace SturdyArrow.Infrastructure.Installers
 {
     public class BootstrapInstaller : MonoInstaller
     {
+        public GameObject audioMonoPrefab;
+
         public override void InstallBindings()
         {
             BindSceneLoader();
             BindSceneService();
-
+            BindAudioMono();
+            BindAudioService();
             BindFsm();
-            InstantiateLifecycleService();
+            InstantiateLifecycleMono();
             CheckAllObjectsInContainer();
+        }
+
+        private void BindAudioService()
+        {
+            Container.Bind<IAudioService>()
+                .To<DefaultAudioService>()
+                .FromNew()
+                .AsSingle()
+                .NonLazy();
+        }
+
+        private void BindAudioMono()
+        {
+            var audioMono = Container.InstantiatePrefabForComponent<AudioMono>(audioMonoPrefab);
+
+            Container.Bind<AudioMono>()
+                .FromInstance(audioMono)
+                .AsSingle()
+                .NonLazy();
         }
 
         private void BindFsm()
@@ -35,9 +58,9 @@ namespace SturdyArrow.Infrastructure.Installers
             fsmInstance.SetState(BootState.BOOTSTRAP_NAME);
         }
 
-        private void InstantiateLifecycleService()
+        private void InstantiateLifecycleMono()
         {
-            LifecycleMono lifecycleService = Container
+            LifecycleMono lifecycleMono = Container
                 .InstantiateComponentOnNewGameObject<LifecycleMono>();
         }
 
