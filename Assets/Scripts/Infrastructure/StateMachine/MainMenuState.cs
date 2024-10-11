@@ -9,7 +9,7 @@ namespace SturdyArrow.Infrastructure.StateMachine
 
         private float timer = 0;
 
-        public IAudioService _audioService;
+        private IAudioService _audioService;
 
         public MainMenuState(Fsm fsm, IAudioService audioService) : base(fsm)
         {

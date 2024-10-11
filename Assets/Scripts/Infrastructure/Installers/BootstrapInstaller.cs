@@ -18,9 +18,19 @@ namespace SturdyArrow.Infrastructure.Installers
             BindSceneService();
             BindAudioMono();
             BindAudioService();
+            BindInputService();
             BindFsm();
             InstantiateLifecycleMono();
             CheckAllObjectsInContainer();
+        }
+
+        private void BindInputService()
+        {
+            Container.Bind<IInputService>()
+                .To<DefaultInputService>()
+                .FromNew()
+                .AsSingle()
+                .NonLazy();
         }
 
         private void BindAudioService()
@@ -78,7 +88,8 @@ namespace SturdyArrow.Infrastructure.Installers
             Container.Bind<ISceneService>()
                 .To<DefaultSceneService>()
                 .FromNew()
-                .AsSingle();
+                .AsSingle()
+                .NonLazy();
         }
 
         private void CheckAllObjectsInContainer()
