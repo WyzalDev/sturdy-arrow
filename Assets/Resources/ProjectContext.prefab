@@ -76,3 +76,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   audioMonoPrefab: {fileID: 8628651442326074879, guid: 173cd0f0d8a30d345a3c8bb6804d6967,
     type: 3}
+  cameraPrefab: {fileID: 4073322340487112086, guid: e419f84fd8714b94494f7bec969739ad,
+    type: 3}

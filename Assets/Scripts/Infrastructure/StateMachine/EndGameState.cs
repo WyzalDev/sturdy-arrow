@@ -1,3 +1,5 @@
+using SturdyArrow.SceneManagement;
+using SturdyArrow.Services;
 using System;
 using UnityEngine;
 
@@ -6,9 +8,17 @@ namespace SturdyArrow.Infrastructure.StateMachine
     public class EndGameState : FsmState
     {
         public const string ENDGAME_NAME = "ENDGAME";
+
         private float timer = 0;
 
-        public EndGameState(Fsm fsm) : base(fsm) => Name = ENDGAME_NAME;
+        private int random;
+
+        private ISceneService _sceneService;
+        public EndGameState(Fsm fsm, ISceneService sceneService) : base(fsm)
+        {
+            Name = ENDGAME_NAME;
+            _sceneService = sceneService;
+        }
 
         public override void Enter()
         {
@@ -21,9 +31,9 @@ namespace SturdyArrow.Infrastructure.StateMachine
             timer = Mathf.Clamp(timer - Time.deltaTime, 0, 2);
             if(timer == 0)
             {
-                int r = (int)Math.Round(UnityEngine.Random.value);
+                random = (int)Math.Round(UnityEngine.Random.value);
 
-                switch(r)
+                switch(random)
                 {
                     case 1:
                         {
@@ -37,6 +47,15 @@ namespace SturdyArrow.Infrastructure.StateMachine
                         }
                 }
             }
+        }
+
+        public override void Exit()
+        {
+            base.Exit();
+            if(random == 1)
+                _sceneService.Load(Scene.MainMenu);
+            else
+                _sceneService.Load(Scene.GameLoop);
         }
     }
 }

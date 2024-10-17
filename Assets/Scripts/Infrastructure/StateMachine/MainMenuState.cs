@@ -1,3 +1,4 @@
+using SturdyArrow.SceneManagement;
 using SturdyArrow.Services;
 using UnityEngine;
 
@@ -11,10 +12,13 @@ namespace SturdyArrow.Infrastructure.StateMachine
 
         private IAudioService _audioService;
 
-        public MainMenuState(Fsm fsm, IAudioService audioService) : base(fsm)
+        private ISceneService _sceneService;
+
+        public MainMenuState(Fsm fsm, IAudioService audioService, ISceneService sceneService) : base(fsm)
         {
             Name = MAINMENU_NAME;
             _audioService = audioService;
+            _sceneService = sceneService;
         }
 
         public override void Enter()
@@ -37,6 +41,7 @@ namespace SturdyArrow.Infrastructure.StateMachine
         {
             base.Exit();
             _audioService.PlayMusic("SomeMusic2", true);
+            _sceneService.Load(Scene.GameLoop);
         }
 
     }

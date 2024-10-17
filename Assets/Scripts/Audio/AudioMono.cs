@@ -27,7 +27,6 @@ namespace SturdyArrow.Audio
         [Range(0f, 1f)]
         private float sourceVolume;
 
-
         private Sound currentMusic;
 
         #endregion

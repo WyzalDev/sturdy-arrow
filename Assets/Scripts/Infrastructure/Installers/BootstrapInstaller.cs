@@ -16,7 +16,7 @@ namespace SturdyArrow.Infrastructure.Installers
         {
             BindSceneLoader();
             BindSceneService();
-            BindAudioMono();
+            BindAudioAndCameraMono();
             BindAudioService();
             BindInputService();
             BindFsm();
@@ -42,7 +42,7 @@ namespace SturdyArrow.Infrastructure.Installers
                 .NonLazy();
         }
 
-        private void BindAudioMono()
+        private void BindAudioAndCameraMono()
         {
             var audioMono = Container.InstantiatePrefabForComponent<AudioMono>(audioMonoPrefab);
 
