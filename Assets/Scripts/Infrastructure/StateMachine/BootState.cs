@@ -21,7 +21,7 @@ namespace SturdyArrow.Infrastructure.StateMachine
         {
             if(isFirstUpdate)
             {
-                fsm.SetState(MainMenuState.MAINMENU_NAME);
+                fsm.SetState(GameLoopState.GAMELOOP_NAME);
                 isFirstUpdate = false;
             }
         }
@@ -29,7 +29,7 @@ namespace SturdyArrow.Infrastructure.StateMachine
         public override void Exit()
         {
             base.Exit();
-            _sceneService.Load(Scene.MainMenu);
+            _sceneService.Load(Scene.GameLoop);
         }
     }
 }

@@ -13,16 +13,16 @@ namespace SturdyArrow.Infrastructure.StateMachine
         public override void Enter()
         {
             base.Enter();
-            timer = 2;
+            //timer = 2;
         }
 
-        public override void Update()
-        {
-            timer = Mathf.Clamp(timer - Time.deltaTime, 0, 2);
-            if(timer == 0)
-            {
-                fsm.SetState(EndGameState.ENDGAME_NAME);
-            }
-        }
+        //public override void Update()
+        //{
+        //    timer = Mathf.Clamp(timer - Time.deltaTime, 0, 2);
+        //    if(timer == 0)
+        //    {
+        //        fsm.SetState(EndGameState.ENDGAME_NAME);
+        //    }
+        //}
     }
 }
