@@ -3,7 +3,6 @@ using SturdyArrow.Core.Archer;
 using SturdyArrow.Core.Arrow;
 using SturdyArrow.Core.Arrow.Container;
 using System.Collections.Generic;
-using UnityEditor.Animations;
 using UnityEngine;
 using Zenject;
 
@@ -34,7 +33,7 @@ namespace SturdyArrow.Infrastructure.Installers
         private GameObject archerPrefab;
 
         [SerializeField]
-        private AnimatorController animatorController;
+        private RuntimeAnimatorController animatorController;
 
         [SerializeField]
         private CinemachineVirtualCamera archerCameraPrefab;
