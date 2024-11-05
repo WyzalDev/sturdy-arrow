@@ -9,25 +9,48 @@ using UnityEngine;
 /// </summary>
 public class AutomatedBuildProcess
 {
-    private static string WINDOWS_BUILD_FOLDER_PATH = "D:/workspace/UnityBuilds";
+    private static string BUILD_FOLDER_PATH = "D:/workspace/UnityBuilds";
 
     private static string PRJ_NAME = "sturdy_arrow";
 
     public static void StartWinBuild()
     {
-        string executableDirectoryPath = WINDOWS_BUILD_FOLDER_PATH + "/" + PRJ_NAME + "/v"
+        string executableDirectoryPath = BUILD_FOLDER_PATH + "/" + PRJ_NAME + "/v"
             + Application.version + "_dt" + System.DateTime.Now.ToString("HH-mm-ss_dd-MM-yyyy");
 
         CreateDirectory(executableDirectoryPath);
 
         string winExecutableName = PRJ_NAME + "_" + Application.version + ".exe";
 
-        Debug.Log("Starting windows build");
-        BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions();
-        buildPlayerOptions.scenes = GetEnabledScenes();
-        buildPlayerOptions.locationPathName = executableDirectoryPath+ "/" + winExecutableName;
-        buildPlayerOptions.target = BuildTarget.StandaloneWindows64;
-        buildPlayerOptions.options = BuildOptions.None;
+        Debug.Log("Starting Windows build");
+        BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions()
+        {
+            scenes = GetEnabledScenes(),
+            locationPathName = executableDirectoryPath + "/" + winExecutableName,
+            target = BuildTarget.StandaloneWindows64,
+            options = BuildOptions.None
+        };
+
+        BuildPipeline.BuildPlayer(buildPlayerOptions);
+        ZipBuild(executableDirectoryPath);
+    }
+
+    public static void StartWebGLBuild()
+    {
+        string executableDirectoryPath = BUILD_FOLDER_PATH + "/" + PRJ_NAME + "/v"
+            + Application.version + "_dt" + System.DateTime.Now.ToString("HH-mm-ss_dd-MM-yyyy");
+
+        CreateDirectory(executableDirectoryPath);
+
+        Debug.Log("Starting WebGL build");
+        BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions()
+        {
+            scenes = GetEnabledScenes(),
+            locationPathName = executableDirectoryPath,
+            target = BuildTarget.WebGL,
+            options = BuildOptions.None
+        };
+
         BuildPipeline.BuildPlayer(buildPlayerOptions);
         ZipBuild(executableDirectoryPath);
     }
@@ -44,10 +67,10 @@ public class AutomatedBuildProcess
             .Where(scene => scene.enabled)
             .Select(scene => scene.path)
             .ToArray();
-            
+
     }
 
-    private static void ZipBuild(string buildPath) 
+    private static void ZipBuild(string buildPath)
     {
         string zipPath = buildPath + ".zip";
         if(File.Exists(zipPath))
