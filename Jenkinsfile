@@ -14,9 +14,12 @@ pipeline {
         stage('Build WebGL') {
             when{expression{params.BUILD_PLATFORM == 'WebGL'}}
             steps {
-                echo 'Building..'
+                script {
+                    bat '"%UNITY_PATH%\\Unity.exe" -quit -batchmode -projectPath "%PROJECT_PATH%" -executeMethod AutomatedBuildProcess.StartWebGLBuild -logfile -'
+                }
             }
         }
+
         stage('Build Windows') {
             when{expression{params.BUILD_PLATFORM == 'Windows'}}
             steps {
@@ -30,10 +33,10 @@ pipeline {
                 echo 'Testing..'
             }
         }
-        stage('Deploy Windows') {
-            when{expression{params.BUILD_PLATFORM == 'Windows'}}
+        stage('Deploy WebGL') {
+            when{expression{params.BUILD_PLATFORM == 'WebGL'}}
             steps {
-                echo "${currentBuild.fullProjectName} Deploying Windows...."
+                echo "${currentBuild.fullProjectName} Deploying WebGL...."
             }
         }
     }
