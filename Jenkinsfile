@@ -1,5 +1,6 @@
 def PROJECT_NAME = "sturdy_arrow"
 def BUILD_PATH = "D:\\workspace\\UnityBuilds\\${PROJECT_NAME}"
+def SERVER_PATH = "D:\\WebGLServer\\${PROJECT_NAME}"
 def UNITY_VERSION = "2022.3.49f1"
 
 pipeline {
@@ -11,6 +12,30 @@ pipeline {
     agent any
 
     stages {
+        stage('Build Clean') {
+            steps {
+                script {
+                    echo 'Start Build Clean...'
+                    bat '(for %%f in ("%BUILD_PATH%\\*.*") do (if NOT "%%~xf"==".zip" del /Q "%%f"))'
+                    bat '(for /D %%d in ("%BUILD_PATH%\\*.*") do rd /S /Q "%%d")'
+                    echo 'End Build Clean...'
+                }
+            }
+        }
+
+        stage('Server Clean') {
+            when{expression{params.BUILD_TYPE == 'Deploy'}}
+            steps {
+                script {
+                    echo 'Start Server Clean...'
+                    
+                    bat 'rd /S /Q "%SERVER_PATH%\\*"'
+
+                    echo 'End Server Clean...'
+                }
+            }
+        }
+
         stage('Build WebGL') {
             when{expression{params.BUILD_PLATFORM == 'WebGL'}}
             steps {
@@ -28,22 +53,23 @@ pipeline {
                 }
             }
         }
+
         stage('Test') {
             steps {
                 echo 'Testing..'
             }
         }
+
         stage('Deploy WebGL') {
             when{expression{params.BUILD_PLATFORM == 'WebGL' && params.BUILD_TYPE == 'Deploy'}}
             steps {
                 script {
-                    def dirrectories = new File("${BUILD_PATH}").listFiles().findAll { it.isDirectory() }
-                    def latestModifiedDir = dirrectories.max { it.lastModified() }
-                    env.LATEST_DIR = latestModifiedDir.getAbsolutePath()
-                    echo "${LATEST_DIR} Deploying WebGL on 9090 port...."
-                    bat 'python -m http.server 9090 -d %LATEST_DIR%'
-                    bat 'timeout /t 5'
-                    bat 'curl -S http://localhost:9090/index.html'
+                    def buildFiles = new File("${BUILD_PATH}").listFiles().findAll { it.isDirectory() }
+                    def latestModifiedBuild = buildFiles.max { it.lastModified() }
+                    env.LATEST_BUILD_PATH = latestModifiedBuild.getAbsolutePath()
+                    env.BUILD_NAME = latestModifiedBuild.getName()
+                    echo "${BUILD_NAME} Deploying WebGL build onto local http server..."
+                    bat 'xcopy "%LATEST_BUILD_PATH%\\*" "%SERVER_PATH%\\" /E /I'
                 }
             }
         }
