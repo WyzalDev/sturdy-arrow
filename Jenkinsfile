@@ -1,12 +1,13 @@
 def PROJECT_NAME = "sturdy_arrow"
-def BUILD_PATH = "D:\\workspace\\UnityBuilds\\${PROJECT_NAME}"
-def SERVER_PATH = "D:\\WebGLServer\\${PROJECT_NAME}"
-def UNITY_VERSION = "2022.3.49f1"
+
+def UNITY_VERSION = "2022.3.52f1"
 
 pipeline {
     environment {
         PROJECT_PATH = "${WORKSPACE}"
         UNITY_PATH = "F:\\Unity\\${UNITY_VERSION}\\Editor"
+        BUILD_PATH = "D:\\workspace\\UnityBuilds\\${PROJECT_NAME}"
+        SERVER_PATH = "D:\\WebGLServer\\${PROJECT_NAME}"
     }
 
     agent any
@@ -28,9 +29,8 @@ pipeline {
             steps {
                 script {
                     echo 'Start Server Clean...'
-                    
-                    bat 'rd /S /Q "%SERVER_PATH%\\*"'
-
+                    bat 'if exist "%SERVER_PATH%" (rd /S /Q "%SERVER_PATH%")'
+                    bat 'echo symbol %SERVER_PATH%'
                     echo 'End Server Clean...'
                 }
             }
